@@ -1,0 +1,16 @@
+---
+#System Settings
+system_modules: [ 'wget', 'vim', 'epel-release' ]
+lemp_modules: [ 'nginx', 'mariadb-server', 'MySQL-python', 'php', 'php-mbstring', 'php-pdo', 'php-mysqlnd', 'php-fpm']
+php_modules: [ 'php-mbstring' ]
+
+#MySQL Settings
+mysql_root_password: "root"
+mysql_db: "wordpress"
+mysql_user: "wp_user"
+mysql_password: "wp_user"
+
+#HTTP Settings
+http_host: "pre.menta.me"
+http_conf: "pre.menta.me.conf"
+http_port: "80"

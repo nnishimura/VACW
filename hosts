@@ -1,21 +1,2 @@
-##########################
-# DO Community Playbooks
-# Example Inventory
-##########################
-
-#########################################################################
-# The "servers" groups is an example of a group with three servers,
-# each identified by a custom alias.
-#########################################################################
-
-[servers]
-menta.me ansible_ssh_host=192.168.33.11 ansible_ssh_port=2222
-
-##########################################################################
-# Makes sure we use Python 3 (/usr/bin/python3) on remote hosts.
-# [servers:vars] sets global values for all nodes in the "servers" group.
-# This is necessary because by default Ansible will try to use
-# /usr/bin/python, which is not available on newer Ubuntu versions.
-#########################################################################
-# [servers:vars]
-# ansible_python_interpreter=/usr/bin/python3
+[default]
+example.com

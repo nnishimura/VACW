@@ -1,8 +1,12 @@
 ---
+# this is the sudo user that should already be setup on the server.  Any sudo roles will use this user and this is the
+# user ansible initially connects as.
+remote_sudo_user: root
+
 #System Settings
-system_modules: [ 'wget', 'vim', 'epel-release' ]
-lemp_modules: [ 'nginx', 'mariadb-server', 'MySQL-python', 'php', 'php-mbstring', 'php-pdo', 'php-mysqlnd', 'php-fpm']
-php_modules: [ 'php-mbstring' ]
+system_modules: [ 'python3', 'wget', 'vim', 'epel-release' ]
+php_modules: [ 'MySQL-python', 'php', 'php-pdo', 'php-mysqlnd', 'php-fpm' ]
+lemp_modules: [ 'nginx', 'mariadb-server', 'MySQL-python', 'php', 'php-pdo', 'php-mysqlnd', 'php-fpm']
 
 #MySQL Settings
 mysql_root_password: "root"
@@ -11,6 +15,7 @@ mysql_user: "wp_user"
 mysql_password: "wp_user"
 
 #HTTP Settings
-http_host: "pre.menta.me"
-http_conf: "pre.menta.me.conf"
+remote_web_user: "nginx"
+http_host: "www.example.com"
+http_conf: "www.example.com.conf"
 http_port: "80"

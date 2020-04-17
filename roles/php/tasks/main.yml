@@ -1,65 +1,37 @@
 ---
-- name: Import remi repository
+- name: Add remi repository
   yum_repository:
-    name: php73
-    description: "repository for php7"
-    baseurl: http://rpms.remirepo.net/enterprise/$releasever/php73/$basearch/
-    mirrorlist: http://cdn.remirepo.net/enterprise/$releasever/php73/mirror
+    name: "{{ php_version }}"
+    description: "repository for php"
+    baseurl: http://rpms.remirepo.net/enterprise/$releasever/{{ php_version }}/$basearch/
     enabled: 1
     gpgcheck: 1
     gpgkey: http://rpms.remirepo.net/RPM-GPG-KEY-remi
-    file: php73
+    file: "{{ php_version }}"
 
 - name: Install PHP modules
   yum:
     name: "{{ item }}"
     update_cache: yes
-    state: latest
-    enablerepo: php73
+    state: present
+    enablerepo: "{{ php_version }}"
   loop: "{{ php_modules }}"
+
+- name: Copy php.ini
+  copy:
+    src: "roles/php/files/php.ini"
+    dest: "/etc/php.ini"
+    backup: yes
+  notify: restart php
+
+- name: Copy www.conf
+  template:
+    src: "roles/php/files/www.conf.j2"
+    dest: "/etc/php-fpm.d/www.conf"
+  notify: restart php
 
 - name: Ensure php-fpm is started
   service:
     name: php-fpm
     state: started
     enabled: true
-    
-- name: Set PHP user
-  lineinfile:
-    dest: /etc/php-fpm.d/www.conf
-    regexp: "^user"
-    line: "user = {{ remote_web_user }}"
-    state: present
-  notify: restart php
-
-- name: Set PHP group
-  lineinfile:
-    dest: /etc/php-fpm.d/www.conf
-    regexp: "^group"
-    line: "group = {{ remote_web_user }}"
-    state: present
-  notify: restart php
-
-- name: Set PHP listen
-  lineinfile:
-    dest: /etc/php-fpm.d/www.conf
-    regexp: "^listen[^\\.]"
-    line: "listen = /run/php-fpm/www.sock"
-    state: present
-  notify: restart php
-
-- name: Set PHP listen owner
-  lineinfile:
-    dest: /etc/php-fpm.d/www.conf
-    regexp: "^;listen\\.owner"
-    line: "listen.owner = {{ remote_web_user }}"
-    state: present
-  notify: restart php
-
-- name: Set PHP listen group
-  lineinfile:
-    dest: /etc/php-fpm.d/www.conf
-    regexp: "^;listen\\.group"
-    line: "listen.group = {{ remote_web_user }}"
-    state: present
-  notify: restart php

@@ -3,7 +3,7 @@
   yum:
     name: nginx
     update_cache: yes
-    state: latest
+    state: present
 
 - name: Create document root
   file:
@@ -13,26 +13,14 @@
     group: "{{ remote_web_user }}"
     mode: '0755'
 
-- name: Clean up Nginx default Configuration
-  template:
-    src: "nginx.conf.j2"
+- name: Copy Nginx default Configuration
+  copy:
+    src: "roles/nginx/files/nginx.conf.j2"
     dest: "/etc/nginx/nginx.conf"
   notify: restart nginx
 
-- name: Set up Nginx VirtualHost
-  template:
-    src: "host.conf.j2"
-    dest: "/etc/nginx/conf.d/{{ http_conf }}"
-  notify: restart nginx
-
-- name: Enable VirtualHost
-  file:
-    dest: "/etc/nginx/sites-enabled"
-    src: "/etc/nginx/conf.d/{{ http_conf }}"
-    state: "link"
-  notify: restart nginx
-
-- name: Schedule nginx process monitor script
-  cron:
-    name: "check nginx process"
-    job: "/tmp/watch.sh"
+- name: Ensure Nginx is started
+  service:
+    name: nginx
+    state: started
+    enabled: true

@@ -1,16 +1,17 @@
 ---
-- name: Install MariaDB
+- name: Install MariaDB modules
   yum:
-    name: mariadb-server
+    name: "{{ item }}"
     update_cache: yes
-    state: latest
+    state: present
+  loop: "{{ mysql_modules }}"
 
 - name: Ensure mariadb is started
   service:
     name: mariadb
     state: started
     enabled: true
-  tags: [ mysql, mysql-root ]
+  tags: [ mariadb, mariadb-root ]
 
 - name: Check if root password is set
   shell: >
@@ -18,7 +19,7 @@
   changed_when: false
   failed_when: false
   register: root_pwd_check
-  tags: mysql
+  tags: mariadb
 
 - name: Set the root password
   mysql_user:
@@ -30,7 +31,7 @@
     state: present
     login_unix_socket: "/var/lib/mysql/mysql.sock"
   when: root_pwd_check.rc == 0
-  tags: [ mysql, mysql-root ]
+  tags: [ mariadb, mariadb-root ]
 
 - name: Create database for WordPress
   mysql_db:
@@ -38,7 +39,7 @@
     state: present
     login_user: root
     login_password: "{{ mysql_root_password }}"
-  tags: [ mysql ]
+  tags: [ mariadb ]
 
 - name: Create MySQL user for WordPress
   mysql_user:
@@ -48,11 +49,4 @@
     state: present
     login_user: root
     login_password: "{{ mysql_root_password }}"
-  tags: [ mysql ]
-
-- name: Schedule db backup script
-  cron:
-    minute: "0"
-    hour: "1"
-    name: "backup wordpress database"
-    job: "/tmp/mysql_backup.sh"
+  tags: [ mariadb ]

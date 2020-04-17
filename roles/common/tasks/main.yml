@@ -1,4 +1,7 @@
 ---
 - name: Install prerequisites
-  yum: name={{ item }} update_cache=yes state=latest
+  yum:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
   loop: "{{ system_modules }}"

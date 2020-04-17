@@ -9,11 +9,10 @@ Vagrant.configure(2) do |config|
 
   config.vm.network "private_network", ip: "192.168.33.11"
 
-  config.vm.provision "file", source: "scripts/mysql_backup.sh", destination: "/tmp/"
-
   config.vm.provision "ansible" do |ansible|
     ansible.verbose = "v"
     ansible.limit = "all"
     ansible.playbook = "playbook.yml"
+    ansible.inventory_path = "hosts"
   end
 end

@@ -16,7 +16,7 @@
     path: /etc/ssl/private/{{ http_host }}.csr
     privatekey_path: /etc/ssl/private/privkey.pem
     common_name: "{{ http_host }}"
-    subject_alt_name: 'DNS:{{ http_host }},DNS:{{ http_host }}'
+    subject_alt_name: 'DNS:{{ http_host }}'
 
 - name: generate a Self Signed OpenSSL certificate
   openssl_certificate:
@@ -24,3 +24,10 @@
     privatekey_path: /etc/ssl/private/privkey.pem
     csr_path: /etc/ssl/private/{{ http_host }}.csr
     provider: selfsigned
+  notify: restart nginx
+
+- name: Set up Nginx VirtualHost
+  template:
+    src: "roles/nginx/files/{{ http_conf }}.j2"
+    dest: "/etc/nginx/conf.d/{{ http_conf }}"
+  notify: restart nginx

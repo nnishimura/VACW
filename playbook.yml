@@ -4,20 +4,12 @@
 
 ---
 - hosts: all
-  become: true
-  vars_files:
-    - vars/default.yml
   roles:
     -
      role: common
      tags: [system]
 
-- hosts: default
-  vars_files:
-    - vars/default.yml
-  remote_user: "{{ remote_sudo_user }}"
-  become: true
-
+- hosts: web
   roles:
     -
      role: php
@@ -29,8 +21,8 @@
      role: ssl
      tags: [ssl]
     -
-     role: mysql
-     tags: [mysql]
+     role: mariadb
+     tags: [mariadb]
     -
      role: wordpress
      tags: [wordpress]

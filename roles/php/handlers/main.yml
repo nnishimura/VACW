@@ -3,4 +3,3 @@
   service:
     name: php-fpm
     state: restarted
-  become: yes
